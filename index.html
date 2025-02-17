@@ -29,22 +29,6 @@
                 strict: false
             });"></script>
 
-  <!-- KaTeX CSS -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
-        integrity="sha384-4Zk+z8Aa+JzAKTvBD4ss2ckJM4pK9EqKqXzKcb0a17SACq5chWGL+3HnBNCJo5Fo"
-        crossorigin="anonymous" />
-  
-  <!-- KaTeX JS + Auto-render Plugin -->
-  <script defer
-          src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js"
-          integrity="sha384-08+S1NkLUrUrZ1FMDvZKwruaVru6efG/EavUSW5a6i7f0TbuZd4L7b34kUfGxCGu"
-          crossorigin="anonymous"></script>
-  <script defer
-          src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js"
-          integrity="sha384-mjC7ctiv2dwvzFHAy757Z3QcY2rTSM2h9ouU2SqL0QKIIBcKRZFFYHTfZ0fXaYfG"
-          crossorigin="anonymous"></script>
-
   <style>
     /* Basic Reset & Typography */
     body {
@@ -120,7 +104,8 @@
         font-size: 0.9em;
       }
     }
-    .katex { font-family: "KaTex_Main", serif !important; }
+    .katex { font-family: KaTeX_Main, Times New Roman, serif }
+    
 
   </style>
 </head>
@@ -162,7 +147,7 @@
 
     function displayRecords(records) {
       const gallery = document.getElementById("gallery");
-      gallery.innerHTLM = "";
+      gallery.innerHTML = "";
 
       records.forEach(record => {
         const fields = record.fields;
@@ -172,7 +157,6 @@
         const imageField = "Image link";
         const descriptionField = "Description (can include LaTeX syntax in between $...$)";
         
-        //[TODO] do I even need this?
         const title = fields[nameField] || "Untitled";
         const description = fields[descriptionField] || "";
         
@@ -197,7 +181,7 @@
           card.appendChild(imgElem);
         }
 
-        // Add title
+        // Add title (plain text; math here is pre-rendered correctly)
         const titleElem = document.createElement("div");
         titleElem.className = "card-title";
         titleElem.textContent = title;
@@ -210,17 +194,16 @@
 
         // Append the card to the gallery
         gallery.appendChild(card);
-      });
 
-      // Once all cards are added, render any LaTeX using KaTeX
-        setTimeout(() => {
-            renderMathInElement(document.body, {
-                delimiters: [
-                { left: "$$", right: "$$", display: true },
-                { left: "$", right: "$", display: false }
-                ]
-            });
-        }, 100); // Small delay ensures content is in the DOM
+        // render LaTex in each card
+        renderMathInElement(card, {
+            delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+            ],
+            strict: false
+        });
+      });
     }
 
     // Fetch records when the page loads
