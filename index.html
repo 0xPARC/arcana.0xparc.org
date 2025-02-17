@@ -124,11 +124,6 @@
   </div>
 
   <script>
-    // === Configuration ===
-    const AIRTABLE_API_KEY = "patY98EU2kP4b5UVr.de90cbc61d796ad4add2618072bec99b0490c1fca789b4c622ed629852a836c5"; // Read-only token ;)
-    const BASE_ID = "app8vXZhXBflS6W0z";
-    const TABLE_ID = "tblNIybhieGoKoGCN";
-    const VIEW_ID = "viwNtI1H61EcGd3nU"; // Optional: remove if not using a view
 
     // Build the Airtable API URL
     const apiUrl = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?view=${VIEW_ID}`;
@@ -136,9 +131,8 @@
     // === Fetch & Display Airtable Records ===
     async function fetchAirtableRecords() {
       try {
-        const response = await fetch(apiUrl, {
-          headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
-        });
+        // Fetch data from our serverless function endpoint
+        const response = await fetch('/api/airtable');
         const data = await response.json();
         displayRecords(data.records);
       } catch (err) {
