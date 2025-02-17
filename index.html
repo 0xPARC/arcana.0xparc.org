@@ -1,1 +1,230 @@
-token: patY98EU2kP4b5UVr.de90cbc61d796ad4add2618072bec99b0490c1fca789b4c622ed629852a836c5
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prehistory of Programmable Cryptography</title>
+  
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" 
+        integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" 
+        crossorigin="anonymous">
+
+  <!-- KaTeX JS --> 
+  <script defer 
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" 
+          integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" 
+          crossorigin="anonymous"></script>
+
+  <!-- Auto-render extension to render LaTeX automatically -->
+  <script defer 
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" 
+            integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" 
+            crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                { left: '$$', right: '$$', display: true },
+                { left: '$', right: '$', display: false }
+                ],
+                strict: false
+            });"></script>
+
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+        integrity="sha384-4Zk+z8Aa+JzAKTvBD4ss2ckJM4pK9EqKqXzKcb0a17SACq5chWGL+3HnBNCJo5Fo"
+        crossorigin="anonymous" />
+  
+  <!-- KaTeX JS + Auto-render Plugin -->
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js"
+          integrity="sha384-08+S1NkLUrUrZ1FMDvZKwruaVru6efG/EavUSW5a6i7f0TbuZd4L7b34kUfGxCGu"
+          crossorigin="anonymous"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js"
+          integrity="sha384-mjC7ctiv2dwvzFHAy757Z3QcY2rTSM2h9ouU2SqL0QKIIBcKRZFFYHTfZ0fXaYfG"
+          crossorigin="anonymous"></script>
+
+  <style>
+    /* Basic Reset & Typography */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #fafafa;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    /* Grid Layout for Cards */
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    /* Card Styles */
+    .card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+    .card img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      /* Lazy loading for performance */
+      loading: lazy;
+    }
+    .card-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    
+    /* Footer Link */
+    .footer-link {
+      text-align: center;
+      margin: 40px 0;
+    }
+    .footer-link a {
+      text-decoration: none;
+      color: #007acc;
+      font-weight: bold;
+    }
+    /* KaTeX Styles for Responsiveness */
+    .katex-display {
+      max-width: 100%;
+      overflow-x: auto;
+      word-wrap: break-word;
+      margin: 1em auto;
+    }
+    .katex {
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    @media (max-width: 600px) {
+      .katex, .katex-display {
+        font-size: 0.9em;
+      }
+    }
+    .katex { font-family: "KaTex_Main", serif !important; }
+
+  </style>
+</head>
+<body>
+  <h1>Prehistory of Programmable Cryptography</h1>
+
+  <!-- Container for dynamically injected cards -->
+  <div id="gallery"></div>
+
+  <!-- Link to Airtable form -->
+  <div class="footer-link">
+    <a href="https://airtable.com/app8vXZhXBflS6W0z/pagFYlF3HNEcnyKii/form" target="_blank">
+      Request a full packet
+    </a>
+  </div>
+
+  <script>
+    // === Configuration ===
+    const AIRTABLE_API_KEY = "patY98EU2kP4b5UVr.de90cbc61d796ad4add2618072bec99b0490c1fca789b4c622ed629852a836c5"; // Read-only token ;)
+    const BASE_ID = "app8vXZhXBflS6W0z";
+    const TABLE_ID = "tblNIybhieGoKoGCN";
+    const VIEW_ID = "viwNtI1H61EcGd3nU"; // Optional: remove if not using a view
+
+    // Build the Airtable API URL
+    const apiUrl = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?view=${VIEW_ID}`;
+
+    // === Fetch & Display Airtable Records ===
+    async function fetchAirtableRecords() {
+      try {
+        const response = await fetch(apiUrl, {
+          headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
+        });
+        const data = await response.json();
+        displayRecords(data.records);
+      } catch (err) {
+        console.error("Error fetching Airtable records:", err);
+      }
+    }
+
+    function displayRecords(records) {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTLM = "";
+
+      records.forEach(record => {
+        const fields = record.fields;
+        
+        // EDIT: Update these to match your Airtable field names
+        const nameField = "Name";
+        const imageField = "Image link";
+        const descriptionField = "Description (can include LaTeX syntax in between $...$)";
+        
+        //[TODO] do I even need this?
+        const title = fields[nameField] || "Untitled";
+        const description = fields[descriptionField] || "";
+        
+        // Handle image URL (either attachment array or a string)
+        let imageUrl = "";
+        if (fields[imageField]) {
+          if (Array.isArray(fields[imageField]) && fields[imageField].length > 0) {
+            imageUrl = fields[imageField][0].url;
+          } else if (typeof fields[imageField] === "string") {
+            imageUrl = fields[imageField];
+          }
+        }
+
+        // Create the card element
+        const card = document.createElement("div");
+        card.className = "card";
+
+        // Add image if available
+        if (imageUrl) {
+          const imgElem = document.createElement("img");
+          imgElem.src = imageUrl;
+          card.appendChild(imgElem);
+        }
+
+        // Add title
+        const titleElem = document.createElement("div");
+        titleElem.className = "card-title";
+        titleElem.textContent = title;
+        card.appendChild(titleElem);
+
+        // Add description (with LaTeX; we use innerHTML so KaTeX can process it)
+        const descElem = document.createElement("div");
+        descElem.innerHTML = description;
+        card.appendChild(descElem);
+
+        // Append the card to the gallery
+        gallery.appendChild(card);
+      });
+
+      // Once all cards are added, render any LaTeX using KaTeX
+        setTimeout(() => {
+            renderMathInElement(document.body, {
+                delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false }
+                ]
+            });
+        }, 100); // Small delay ensures content is in the DOM
+    }
+
+    // Fetch records when the page loads
+    document.addEventListener("DOMContentLoaded", fetchAirtableRecords);
+  </script>
+</body>
+</html>
