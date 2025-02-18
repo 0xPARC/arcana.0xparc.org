@@ -18,80 +18,109 @@
 
   <!-- Auto-render extension to render LaTeX automatically -->
   <script defer 
-            src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" 
-            integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" 
-            crossorigin="anonymous"
-            onload="renderMathInElement(document.body, {
-                delimiters: [
-                { left: '$$', right: '$$', display: true },
-                { left: '$', right: '$', display: false }
-                ],
-                strict: false
-            });"></script>
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" 
+          integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" 
+          crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false }
+            ],
+            strict: false
+          });"></script>
 
   <style>
-    /* Basic Reset & Typography */
+    /* 
+      Body: soft, warm background reminiscent of a lightly finished wood or paper.
+      Font: a clean sans-serif with muted colors to evoke a calm, natural feel.
+    */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background-color: #fafafa;
-      max-width: 900px;
+      background-color: #F3F0EB;  /* warm, light background */
+      max-width: 1000px;
       margin: auto;
+      color: #3D4035; /* subtle dark gray for text */
     }
+
     h1 {
       text-align: center;
       margin-bottom: 30px;
+      color: #4B5A45; /* a greenish-brown for a natural vibe */
     }
     
-    /* Grid Layout for Cards */
+    /* Grid for the 'trading cards' */
     #gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
+      gap: 24px;
       margin-top: 40px;
     }
     
-    /* Card Styles */
+    /* Card = trading card style */
     .card {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 16px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
+      background-color: #FFFDF8;  /* off-white, like a card or paper */
+      border: 2px solid #C2A67E;  /* warm brownish tone for the border */
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
+
     .card:hover {
       transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.2);
     }
+
     .card img {
-      max-width: 100%;
+      width: 100%;
       height: 180px;
       object-fit: cover;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      /* Lazy loading for performance */
+      margin: 0 auto 10px auto;  /* center horizontally */
+      border-radius: 6px;
       loading: lazy;
     }
+
     .card-title {
       font-weight: bold;
+      font-size: 1.1em;
       margin-bottom: 8px;
+      text-align: center;
+      color: #4B5A45; /* ties in with the header color */
     }
     
-    /* Footer Link */
+    /* The description container for text & KaTeX */
+    .card-description {
+      font-size: 0.95em;
+      line-height: 1.4;
+      flex-grow: 1;   /* let description fill remaining space */
+    }
+
+    /* Footer Link: subtle button style */
     .footer-link {
       text-align: center;
       margin: 40px 0;
     }
     .footer-link a {
       text-decoration: none;
-      color: #007acc;
+      color: #4B5A45;
       font-weight: bold;
+      border: 2px solid #C2A67E;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
     }
-    /* KaTeX Styles for Responsiveness */
+    .footer-link a:hover {
+      background-color: #C2A67E;
+      color: #FFF;
+    }
+
+    /* KaTeX styling for responsiveness & font tweak */
     .katex-display {
       max-width: 100%;
       overflow-x: auto;
@@ -101,24 +130,22 @@
     .katex {
       max-width: 100%;
       word-wrap: break-word;
+      font-family: KaTeX_Main, Times, serif;
     }
     @media (max-width: 600px) {
       .katex, .katex-display {
         font-size: 0.9em;
       }
     }
-    .katex { font-family: KaTeX_Main, Times New Roman, serif }
-    
-
   </style>
 </head>
 <body>
   <h1>Prehistory of Programmable Cryptography</h1>
 
-  <!-- Container for dynamically injected cards -->
+  <!-- Gallery container for dynamically injected 'trading cards' -->
   <div id="gallery"></div>
 
-  <!-- Link to Airtable form -->
+  <!-- Link to Airtable form at bottom -->
   <div class="footer-link">
     <a href="https://airtable.com/app8vXZhXBflS6W0z/pagFYlF3HNEcnyKii/form" target="_blank">
       Request a full packet
@@ -126,12 +153,9 @@
   </div>
 
   <script>
-
-
-    // === Fetch & Display Airtable Records ===
+    // === Fetch & Display Airtable Records via your serverless function ===
     async function fetchAirtableRecords() {
       try {
-        // Fetch data from our serverless function endpoint
         const response = await fetch('/api/airtable');
         const data = await response.json();
         displayRecords(data.records);
@@ -146,16 +170,16 @@
 
       records.forEach(record => {
         const fields = record.fields;
-        
-        // EDIT: Update these to match your Airtable field names
+
+        // Adjust these to your actual field names
         const nameField = "Name";
         const imageField = "Image link";
         const descriptionField = "Description (can include LaTeX syntax in between $...$)";
         
         const title = fields[nameField] || "Untitled";
         const description = fields[descriptionField] || "";
-        
-        // Handle image URL (either attachment array or a string)
+
+        // Build the image URL
         let imageUrl = "";
         if (fields[imageField]) {
           if (Array.isArray(fields[imageField]) && fields[imageField].length > 0) {
@@ -169,39 +193,40 @@
         const card = document.createElement("div");
         card.className = "card";
 
-        // Add image if available
+        // Image (optional)
         if (imageUrl) {
           const imgElem = document.createElement("img");
           imgElem.src = imageUrl;
           card.appendChild(imgElem);
         }
 
-        // Add title (plain text; math here is pre-rendered correctly)
+        // Title
         const titleElem = document.createElement("div");
         titleElem.className = "card-title";
         titleElem.textContent = title;
         card.appendChild(titleElem);
 
-        // Add description (with LaTeX; we use innerHTML so KaTeX can process it)
+        // Description (with LaTeX)
         const descElem = document.createElement("div");
+        descElem.className = "card-description";
         descElem.innerHTML = description;
         card.appendChild(descElem);
 
-        // Append the card to the gallery
+        // Add card to gallery
         gallery.appendChild(card);
 
-        // render LaTex in each card
+        // Render KaTeX in each card
         renderMathInElement(card, {
-            delimiters: [
+          delimiters: [
             { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false }
-            ],
-            strict: false
+            { left: "$",  right: "$",  display: false }
+          ],
+          strict: false
         });
       });
     }
 
-    // Fetch records when the page loads
+    // Fetch records on page load
     document.addEventListener("DOMContentLoaded", fetchAirtableRecords);
   </script>
 </body>
