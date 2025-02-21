@@ -86,9 +86,14 @@
       width: 100%;
       height: 100%;
     }
-
+    /*
     .card:hover .card-inner {
       transform: rotateY(180deg);
+    }
+    */
+
+    .card.flipped .card-inner {
+    transform: rotateY(180deg);
     }
 
     .card-front {
@@ -261,6 +266,11 @@
         cardInner.appendChild(cardBack);
         card.appendChild(cardInner);
         gallery.appendChild(card);
+        // Toggle flip on click for mobile users (or desktop)
+        card.addEventListener("click", function(e) {
+        // Prevent the hover effect from interfering if needed
+        card.classList.toggle("flipped");
+        });
 
         // render LaTex in each card
         renderMathInElement(card, {
