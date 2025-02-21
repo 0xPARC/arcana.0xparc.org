@@ -169,7 +169,7 @@
   </style>
 </head>
 <body>
-  <h1>[not yet "shipped"] Prehistory of Programmable Cryptography</h1>
+  <h1>Prehistory of Programmable Cryptography</h1>
 
   <!-- Container for dynamically injected cards -->
   <div id="gallery"></div>
@@ -180,9 +180,13 @@
       Request a full packet
     </a>
   </div>
+  
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 
   <script>
-
 
     // === Fetch & Display Airtable Records ===
     async function fetchAirtableRecords() {
@@ -205,7 +209,7 @@
         
         // EDIT: Update these to match your Airtable field names
         const nameField = "Name";
-        const imageField = "Image link";
+        const imageField = "Image file name or image link address";
         const descriptionField = "Description (can include LaTeX syntax in between $...$)";
         
         const title = fields[nameField] || "Untitled";
