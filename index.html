@@ -28,8 +28,21 @@
                 ],
                 strict: false
             });"></script>
-
+  <!-- IBM Plex Serif from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
+    /* Add your custom font via @font-face */
+    @font-face {
+      font-family: 'FK Grotesk SemiMono';
+      src: url('fonts/FKGroteskSemiMono-Light.woff2') format('woff2'),
+           url('fonts/FKGroteskSemiMono-Light.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     /* Basic Reset & Typography */
     body {
       font-family: Arial, sans-serif;
@@ -52,33 +65,76 @@
       margin-top: 40px;
     }
     
+
     /* Card Styles */
     .card {
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 5px;
-      padding: 16px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
+      perspective: 1000px;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 5 / 7;
     }
-    .card:hover {
-      transform: translateY(-5px);
+
+    .card-inner {
+      transition: transform 0.7s ease;
+      transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      height: 100%;
     }
-    .card img {
-      max-width: 100%;
-      height: 180px;
-      object-fit: cover;
+
+    .card:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .card-back {
+      position: absolute;
+      inset: 0;
+      transform: rotateY(180deg);
+      display: flex;
+      backface-visibility: hidden;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    
+    .card-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 10px;
-      border-radius: 4px;
+      margin: 0;
+      
       /* Lazy loading for performance */
       loading: lazy;
     }
+
     .card-title {
+      font-family: 'IBM Plex Serif', serif;
       font-weight: bold;
       margin-bottom: 8px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card-description {
+      font-family: 'FK Grotesk SemiMono', sans-serif;
+      font-size: clamp(0.2rem, 1.25vw, 0.8rem);
+      text-align: center; /* Optional: center the text */
     }
     
     /* Footer Link */
@@ -87,7 +143,7 @@
       margin: 40px 0;
     }
     .footer-link a {
-      text-decoration: none;
+      text-decoration: underline;
       color: #007acc;
       font-weight: bold;
     }
@@ -156,6 +212,7 @@
         const description = fields[descriptionField] || "";
         
         // Handle image URL (either attachment array or a string)
+        
         let imageUrl = "";
         if (fields[imageField]) {
           if (Array.isArray(fields[imageField]) && fields[imageField].length > 0) {
@@ -164,30 +221,41 @@
             imageUrl = fields[imageField];
           }
         }
-
-        // Create the card element
+        // Create card structure for flip effect
         const card = document.createElement("div");
         card.className = "card";
 
-        // Add image if available
+        const cardInner = document.createElement("div");
+        cardInner.className = "card-inner";
+
+        // Front: display the image
+        const cardFront = document.createElement("div");
+        cardFront.className = "card-front";
         if (imageUrl) {
+          if (!imageUrl.startsWith('http')) { imageUrl = 'img/' + imageUrl; }
           const imgElem = document.createElement("img");
           imgElem.src = imageUrl;
-          card.appendChild(imgElem);
+          cardFront.appendChild(imgElem);
         }
 
-        // Add title (plain text; math here is pre-rendered correctly)
+        // Back: display title and description
+        const cardBack = document.createElement("div");
+        cardBack.className = "card-back";
+
         const titleElem = document.createElement("div");
         titleElem.className = "card-title";
         titleElem.textContent = title;
-        card.appendChild(titleElem);
+        cardBack.appendChild(titleElem);
 
-        // Add description (with LaTeX; we use innerHTML so KaTeX can process it)
         const descElem = document.createElement("div");
-        descElem.innerHTML = description;
-        card.appendChild(descElem);
+        descElem.className = "card-description";
+        descElem.innerHTML = description; // for KaTeX
+        cardBack.appendChild(descElem);
 
-        // Append the card to the gallery
+        // Assemble
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
         gallery.appendChild(card);
 
         // render LaTex in each card
