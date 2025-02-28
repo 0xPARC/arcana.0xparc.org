@@ -2,232 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Prehistory of Programmable Cryptography</title>
   
-  <!-- KaTeX CSS -->
-  <link rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" 
-        integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" 
-        crossorigin="anonymous">
-
-  <!-- KaTeX JS --> 
-  <script defer 
-          src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" 
-          integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" 
-          crossorigin="anonymous"></script>
-
-  <!-- Auto-render extension to render LaTeX automatically -->
-  <script defer 
-          src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js" 
-          integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" 
-          crossorigin="anonymous"
-          onload="renderMathInElement(document.body, {
-            delimiters: [
-              { left: '$$', right: '$$', display: true },
-              { left: '$', right: '$', display: false }
-            ],
-            strict: false
-          });"></script>
-
+  <!-- IBM Plex Serif from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
-    /* 
-      Body: soft, warm background reminiscent of a lightly finished wood or paper.
-      Font: a clean sans-serif with muted colors to evoke a calm, natural feel.
-    */
+    /* Basic Reset & Typography */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 20px;
-      background-color: #F3F0EB;  /* warm, light background */
-      max-width: 1000px;
+      background-color: #fafafa;
+      max-width: 900px;
       margin: auto;
-      color: #3D4035; /* subtle dark gray for text */
     }
-
     h1 {
+      font-family: 'IBM Plex Serif', serif;
       text-align: center;
       margin-bottom: 30px;
-      color: #4B5A45; /* a greenish-brown for a natural vibe */
     }
     
-    /* Grid for the 'trading cards' */
+    /* Grid Layout for Cards */
     #gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 24px;
+      gap: 20px;
       margin-top: 40px;
     }
     
-    /* Card = trading card style */
+    /* Card Styles */
     .card {
-      background-color: #FFFDF8;  /* off-white, like a card or paper */
-      border: 2px solid #C2A67E;  /* warm brownish tone for the border */
-      border-radius: 10px;
-      padding: 16px 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 12px rgba(0,0,0,0.2);
-    }
-
-    .card img {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      perspective: 1000px;
+      position: relative;
+      overflow: hidden;
       width: 100%;
-      height: 180px;
-      object-fit: cover;
-      display: block;
-      margin: 0 auto 10px auto;  /* center horizontally */
-      border-radius: 6px;
-      loading: lazy;
-    }
-
-    .card-title {
-      font-weight: bold;
-      font-size: 1.1em;
-      margin-bottom: 8px;
-      text-align: center;
-      color: #4B5A45; /* ties in with the header color */
+      aspect-ratio: 5 / 7;
     }
     
-    /* The description container for text & KaTeX */
-    .card-description {
-      font-size: 0.95em;
-      line-height: 1.4;
-      flex-grow: 1;   /* let description fill remaining space */
+    .card-inner {
+      transition: transform 0.7s ease;
+      transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .card-front{
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 5px; 
+      overflow: hidden;   
     }
 
-    /* Footer Link: subtle button style */
+    .card-back {
+      /*border-radius: 5px;*/
+      overflow: hidden;
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+    }
+    
+    .card-front img,
+    .card-back img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0;
+    }
+    
+    /* Footer Link */
     .footer-link {
       text-align: center;
       margin: 40px 0;
     }
     .footer-link a {
-      text-decoration: none;
-      color: #4B5A45;
+      text-decoration: underline;
+      color: #007acc;
       font-weight: bold;
-      border: 2px solid #C2A67E;
-      padding: 8px 16px;
-      border-radius: 6px;
-      transition: background-color 0.2s ease;
-    }
-    .footer-link a:hover {
-      background-color: #C2A67E;
-      color: #FFF;
-    }
-
-    /* KaTeX styling for responsiveness & font tweak */
-    .katex-display {
-      max-width: 100%;
-      overflow-x: auto;
-      word-wrap: break-word;
-      margin: 1em auto;
-    }
-    .katex {
-      max-width: 100%;
-      word-wrap: break-word;
-      font-family: KaTeX_Main, Times, serif;
-    }
-    @media (max-width: 600px) {
-      .katex, .katex-display {
-        font-size: 0.9em;
-      }
     }
   </style>
 </head>
 <body>
   <h1>Prehistory of Programmable Cryptography</h1>
 
-  <!-- Gallery container for dynamically injected 'trading cards' -->
-  <div id="gallery"></div>
-
-  <!-- Link to Airtable form at bottom -->
+  <!-- Link to Airtable form at the top -->
   <div class="footer-link">
     <a href="https://airtable.com/app8vXZhXBflS6W0z/pagFYlF3HNEcnyKii/form" target="_blank">
       Request a full packet
     </a>
   </div>
 
+  <!-- Container for dynamically injected cards -->
+  <div id="gallery"></div>
+  
   <script>
-    // === Fetch & Display Airtable Records via your serverless function ===
     async function fetchAirtableRecords() {
       try {
-        const response = await fetch('/api/airtable');
+        const response = await fetch('/api/airtable?v=1.0.0');
         const data = await response.json();
         displayRecords(data.records);
       } catch (err) {
         console.error("Error fetching Airtable records:", err);
       }
     }
-
+    
     function displayRecords(records) {
       const gallery = document.getElementById("gallery");
       gallery.innerHTML = "";
-
+      
       records.forEach(record => {
         const fields = record.fields;
-
-        // Adjust these to your actual field names
-        const nameField = "Name";
-        const imageField = "Image link";
-        const descriptionField = "Description (can include LaTeX syntax in between $...$)";
+        const imageField = "Image file name or image link address";
         
-        const title = fields[nameField] || "Untitled";
-        const description = fields[descriptionField] || "";
-
-        // Build the image URL
-        let imageUrl = "";
+        let fileName = "";
         if (fields[imageField]) {
           if (Array.isArray(fields[imageField]) && fields[imageField].length > 0) {
-            imageUrl = fields[imageField][0].url;
+            fileName = fields[imageField][0].url;
           } else if (typeof fields[imageField] === "string") {
-            imageUrl = fields[imageField];
+            fileName = fields[imageField];
           }
         }
-
-        // Create the card element
+        
         const card = document.createElement("div");
         card.className = "card";
-
-        // Image (optional)
-        if (imageUrl) {
-          const imgElem = document.createElement("img");
-          imgElem.src = imageUrl;
-          card.appendChild(imgElem);
+        
+        const cardInner = document.createElement("div");
+        cardInner.className = "card-inner";
+        
+        // Card Front: Use image from "img/front"
+        const cardFront = document.createElement("div");
+        cardFront.className = "card-front";
+        if (fileName) {
+          let frontSrc = fileName;
+          if (!frontSrc.startsWith('http')) {
+            frontSrc = 'img/front/' + frontSrc;
+          }
+          const imgFront = document.createElement("img");
+          imgFront.src = frontSrc;
+          cardFront.appendChild(imgFront);
         }
-
-        // Title
-        const titleElem = document.createElement("div");
-        titleElem.className = "card-title";
-        titleElem.textContent = title;
-        card.appendChild(titleElem);
-
-        // Description (with LaTeX)
-        const descElem = document.createElement("div");
-        descElem.className = "card-description";
-        descElem.innerHTML = description;
-        card.appendChild(descElem);
-
-        // Add card to gallery
+        
+        // Card Back: Use image from "img/back"
+        const cardBack = document.createElement("div");
+        cardBack.className = "card-back";
+        if (fileName) {
+          let backSrc = fileName;
+          if (!backSrc.startsWith('http')) {
+            backSrc = 'img/back/' + backSrc;
+          }
+          const imgBack = document.createElement("img");
+          imgBack.src = backSrc;
+          cardBack.appendChild(imgBack);
+        }
+        
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        card.appendChild(cardInner);
         gallery.appendChild(card);
-
-        // Render KaTeX in each card
-        renderMathInElement(card, {
-          delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$",  right: "$",  display: false }
-          ],
-          strict: false
+        
+        card.addEventListener("click", function() {
+          card.classList.toggle("flipped");
         });
       });
     }
-
-    // Fetch records on page load
+    
     document.addEventListener("DOMContentLoaded", fetchAirtableRecords);
   </script>
+  
+  <script defer src="/_vercel/insights/script.js?v=1.0.0"></script>
 </body>
 </html>
