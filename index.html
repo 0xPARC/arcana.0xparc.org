@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prehistory of Programmable Cryptography</title>
+  <title>A Prehistory of Programmable Cryptography</title>
   
   <!-- IBM Plex Serif from Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +24,7 @@
       font-family: 'IBM Plex Serif', serif;
       text-align: center;
       margin-bottom: 30px;
+      font-style: italic;
     }
     
     /* Grid Layout for Cards */
@@ -59,16 +60,15 @@
       transform: rotateY(180deg);
     }
     
-    .card-front{
+    .card-front {
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
-      border-radius: 5px; 
-      overflow: hidden;   
+      border-radius: 5px;
+      overflow: hidden;
     }
-
+    
     .card-back {
-      /*border-radius: 5px;*/
       overflow: hidden;
       position: absolute;
       inset: 0;
@@ -98,7 +98,7 @@
   </style>
 </head>
 <body>
-  <h1>Prehistory of Programmable Cryptography</h1>
+  <h1>A Prehistory of Programmable Cryptography</h1>
 
   <!-- Link to Airtable form at the top -->
   <div class="footer-link">
@@ -127,7 +127,9 @@
       
       records.forEach(record => {
         const fields = record.fields;
+        const nameField = "Name"; // Your name field
         const imageField = "Image file name or image link address";
+        const rabbitHoleField = "rabbit-hole-link"; // New field for the link
         
         let fileName = "";
         if (fields[imageField]) {
@@ -141,10 +143,15 @@
         const card = document.createElement("div");
         card.className = "card";
         
+        // If there's no name, flip the card by default
+        if (!fields[nameField]) {
+          card.classList.add("flipped");
+        }
+        
         const cardInner = document.createElement("div");
         cardInner.className = "card-inner";
         
-        // Card Front: Use image from "img/front"
+        // Card Front: use image from "img/front"
         const cardFront = document.createElement("div");
         cardFront.className = "card-front";
         if (fileName) {
@@ -157,7 +164,7 @@
           cardFront.appendChild(imgFront);
         }
         
-        // Card Back: Use image from "img/back"
+        // Card Back: use image from "img/back"
         const cardBack = document.createElement("div");
         cardBack.className = "card-back";
         if (fileName) {
@@ -175,9 +182,18 @@
         card.appendChild(cardInner);
         gallery.appendChild(card);
         
-        card.addEventListener("click", function() {
-          card.classList.toggle("flipped");
-        });
+        // Set up click behavior:
+        // For records without a name (flipped by default) and with a rabbit-hole-link, navigate to that link.
+        // Otherwise, toggle the flip.
+        if (!fields[nameField] && fields[rabbitHoleField]) {
+          card.addEventListener("click", function() {
+            window.open(fields[rabbitHoleField], "_blank");
+          });
+        } else {
+          card.addEventListener("click", function() {
+            card.classList.toggle("flipped");
+          });
+        }
       });
     }
     
